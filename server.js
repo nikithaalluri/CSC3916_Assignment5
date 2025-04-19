@@ -200,7 +200,7 @@ router.route('/movies')
 
     // Add a new movie
     .post(authJwtController.isAuthenticated, async (req, res) => {
-        const { title, releaseDate, genre, actors } = req.body;
+        const { title, releaseDate, genre, actors, imageUrl } = req.body;
 
         // Validate that required fields exist
         if (!title || !releaseDate || !genre || !actors || actors.length < 1) {
@@ -208,7 +208,7 @@ router.route('/movies')
         }
 
         try {
-            const newMovie = new Movie({ title, releaseDate, genre, actors });
+            const newMovie = new Movie({ title, releaseDate, genre, actors, imageUrl });
             await newMovie.save();
             res.status(201).json({ success: true, message: 'Movie added successfully', movie: newMovie });
         } catch (err) {
@@ -218,14 +218,14 @@ router.route('/movies')
 
     // Update a movie
     .put(authJwtController.isAuthenticated, async (req, res) => {
-        const { id, title, releaseDate, genre, actors } = req.body;
+        const { id, title, releaseDate, genre, actors, imageUrl } = req.body;
 
         if (!id) {
             return res.status(400).json({ success: false, message: 'Movie ID is required for updating' });
         }
 
         try {
-            const updatedMovie = await Movie.findByIdAndUpdate(id, { title, releaseDate, genre, actors }, { new: true });
+            const updatedMovie = await Movie.findByIdAndUpdate(id, { title, releaseDate, genre, actors, imageUrl }, { new: true });
             if (!updatedMovie) {
                 return res.status(404).json({ success: false, message: 'Movie not found' });
             }
